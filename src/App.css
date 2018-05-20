@@ -1,61 +1,60 @@
 body {
   margin: 0;
   padding: 0;
+  font-size: 2rem;
+  background: blue;
 }
-.container {
-  height: 100vh;
-  position: relative;
-  background: pink;
-  padding: 100px;
+.foo {
+  width: 100%;
+  background: blue;
 }
-
-.header {
-  background: rgba(255, 255, 255, 0);
-  margin: auto;
-  width: 300px
-}
-.input-container {
-  transform-origin: center;
-  text-align: center;
+.foo.fixed {
+  width: 100vw;
+  background: white;
+  position: fixed;
+  left: 0px;
+  padding: 2rem;
+  top: 0px;
+  border-bottom: solid 1px blue;
 }
 
 input {
-  width: 80%;
-  height: 3rem;
+  height: 2rem;
+  margin: auto;
+  display: block;
+  width: 100%;
+  transition: .4s linear all; 
+  border-radius: 5px;
+  border: solid 1px grey;
+  outline: none;
+  font-size: 1rem;
 }
+.component-container {
+  position: relative;
+  width: 200px;
+  margin: auto;
+  height: 2rem;
+}
+
 .fixed input {
   height: 4rem;
-}
-
-.instructions {
-  transform-origin: center;
-  overflow: hidden;
- }
-
- .instruction-text {
-   font-size: 1px;
-   transition: all ease-in-out 0.2s, transform 1s;
-   transform: translateY(100px);
-   opacity: 0;
- }
-
- .instruction-text.show {
-    opacity: 1;
-    transition: all ease-in-out 0.2s;
-    transform: translatey(0);
- }
-
- .fixed .instruction-text {
-  font-size: 20px;
-  padding: 1rem;
- }
- .fixed .instructions {
- }
-.fixed {
+  font-size: 2rem;
   background: white;
-  position: fixed;
-  transform-origin: center;
-  left: 10vw;
-  width: 80vw;
-  top: 0;
+  border-radius: 0;
+  border: none;
+  border-bottom: 3px grey solid;
 }
+
+p {
+  transition: .4s linear all;
+  opacity: 0;
+  font-size: 0;
+  height: 0;
+}
+
+.fixed p {
+  display:block;
+  font-size: 14px;
+  height: auto;
+}
+

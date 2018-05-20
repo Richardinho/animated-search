@@ -2,122 +2,115 @@ import React, { Component } from 'react';
 import './App.css';
 import { atob } from './atob';
 
+const animationDuration = '.4s';
+
 class App extends Component {
   constructor() {
     super();
     this.state = {
       fixed: false,
-      showInstructions: false,
     }
-    this.inputRef = React.createRef();
     this.fooRef = React.createRef();
-    this.instructionsRef = React.createRef();
     this.onClick = this.onClick.bind(this);
+  }
+  componentDidMount() {
+    const fooEl = this.fooRef.current;
+    fooEl.style.transition = `all ease-in ${animationDuration}`;
+    fooEl.style.transform  = 'scale(1) translate(0, 0)';
   }
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
-    if(prevState.fixed !== this.state.fixed) {
-      this.firstInput = this.inputRef.current.getBoundingClientRect();
-      this.firstInstructions = this.instructionsRef.current.getBoundingClientRect();
-    }
+    this.firstFoo = this.fooRef.current.getBoundingClientRect();
+    
+    const fooEl = this.fooRef.current;
     return null;
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(prevState.fixed !== this.state.fixed) {
-      let instructionsBackground;
-      if(this.state.fixed) {
-        instructionsBackground = 'white';
-      } else {
-        instructionsBackground = 'pink';
-      }
-      this.lastInput = this.inputRef.current.getBoundingClientRect();
-      this.lastInstructions = this.instructionsRef.current.getBoundingClientRect();
-
-      requestAnimationFrame( () => {
-        this.inputRef.current.style.transform = atob(this.lastInput, this.firstInput);
-        this.instructionsRef.current.style.transform = atob(this.lastInstructions, this.firstInstructions);
-
-
-        this.inputRef.current.style.transition = 'all 0s';  
-        this.instructionsRef.current.style.transition = 'all 0s';  
-        this.instructionsRef.current.style.background = instructionsBackground;  
-                    this.play();
-      });
+    this.lastFoo = this.fooRef.current.getBoundingClientRect();
+    const parEl = this.getParagraphEl();  
+    const cr = parEl.getBoundingClientRect();
+    if(this.state.fixed) {
+      parEl.style.height = cr.height + 'px';
+    } else {
+      parEl.style.height = 0;
     }
+
+    requestAnimationFrame(() => {
+      this.fooRef.current.style.transform = atob(this.lastFoo, this.firstFoo);
+      this.fooRef.current.style.transition = 'all 0s';  
+      this.play();
+    });
   }
 
   play() {
-
-    let instructionsBackground;
+    let fooEl = this.fooRef.current;
 
     requestAnimationFrame( () => {
-      const afterTransition = () => {
-        this.inputRef.current.removeEventListener('transitionend', afterTransition); 
+      let onTransitionEnd = () => {
+        fooEl.removeEventListener('transitionend', onTransitionEnd); 
+        const parEl = this.getParagraphEl();  
         if(this.state.fixed) {
-          this.showInstructions();
-          instructionsBackground = 'pink';
+          parEl.style.height = 'auto';
+          parEl.style.opacity = 1;
         } else {
-          instructionsBackground = 'white';
+          //    parEl.style.height = 0;
         }
-        
       };
-      this.inputRef.current.addEventListener('transitionend', afterTransition);
-      this.inputRef.current.style.transition = 'all ease-in 450ms';
-      this.inputRef.current.style.transform  = 'scale(1) translate(0, 0)';
-
-      this.instructionsRef.current.style.transition = 'all ease-in 450ms';
-      this.instructionsRef.current.style.transform  = 'scale(1) translate(0, 0)';
-        this.instructionsRef.current.style.background = instructionsBackground;  
-      
+      fooEl.addEventListener('transitionend', onTransitionEnd);
+      fooEl.style.transition = `all ease-in ${animationDuration}`;
+      fooEl.style.transform  = 'scale(1) translate(0, 0)';
     });
   }
 
-  showInstructions() {
-    console.log('show instructions');
-    this.fooRef.current.classList.add('show');
-
-  }
-  hideInstructions() {
-    const fooRef = this.fooRef.current;
-
-    return new Promise(resolve => {
-      const afterTransition = () => {
-        fooRef.removeEventListener('transitionend', afterTransition);  
-        resolve();
-      };
-      fooRef.addEventListener('transitionend', afterTransition);
-
-      this.fooRef.current.classList.remove('show');
-    });
+  getParagraphEl () {
+    return this.fooRef.current.querySelector('p'); 
   }
 
   onClick() {
-    
     if(this.state.fixed) {
-      this.hideInstructions().then(() => {
+      let fooEl = this.fooRef.current;
+      let pEl = fooEl.querySelector('p');
+      let onTransitionEnd = () => {
+        pEl.removeEventListener('transitionend', onTransitionEnd); 
         this.setState({ fixed: false });
-      });
+      };
+      pEl.addEventListener('transitionend', onTransitionEnd);
+      pEl.style.opacity = 0;
     } else {
-      this.setState({ fixed : true });
-    }
+      this.setState({ fixed: true });
+    } 
   }
 
   render() {
     return (
-      <div className="container">
-        <div 
-          onClick={this.onClick}
-          className={`header ${this.state.fixed ? 'fixed': ''}`}>
-          <div ref={this.inputRef} className="input-container">
-            <input />
-          </div>
-          <div ref={this.instructionsRef} className="instructions">
-            <div ref={this.fooRef} className='instruction-text'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 
-            </div>
-          </div>
-        </div>
+      <div>
+        Janette looked at the floor of the carriage when it entered the gateway to Stoneleigh to his surprise and relief the security at the gate waved through the carriage knowing exactly who it’s occupant was. Drawing up to the main entrance to the manor the door of the carriage was opened by a uniformed footman who bowed respectfully.
+
+He knew well not to raise his head until Miss Cat had passed.
+
+Janette stumbled little on the steps caught up in his skirts and a helping hand from Sharista steadied him. 
+
+“Relax Janette eyes are on you.” 
+
+If Sharista’s words were meant to calm him they didn’t and he was becoming increasingly aware of the restrictiveness of his skirts gathering around him. 
+      <div className="component-container">
+        <div ref={this.fooRef} onClick={this.onClick} className={`foo ${this.state.fixed ? 'fixed': ''}`}>
+          <input placeholder="hello world" className="input"/>
+          <p className="paragraph-normal">
+            One thing I don’t get is why if you put a gun to someone’s head on the street and demands money from the person, the person who did is gets thrown in jail, however, you also get thrown in jail if you don’t pay your taxes. Either scenario entails theft, which is immoral. Of course, with Progressives, their views on morality are twisted.
+          </p>
+      </div>
+    </div>
+        Janette looked at the floor of the carriage when it entered the gateway to Stoneleigh to his surprise and relief the security at the gate waved through the carriage knowing exactly who it’s occupant was. Drawing up to the main entrance to the manor the door of the carriage was opened by a uniformed footman who bowed respectfully.
+
+He knew well not to raise his head until Miss Cat had passed.
+
+Janette stumbled little on the steps caught up in his skirts and a helping hand from Sharista steadied him. 
+
+“Relax Janette eyes are on you.” 
+
+If Sharista’s words were meant to calm him they didn’t and he was becoming increasingly aware of the restrictiveness of his skirts gathering around him. 
       </div>
     );
   }
